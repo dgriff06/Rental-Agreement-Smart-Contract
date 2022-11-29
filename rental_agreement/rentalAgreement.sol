@@ -9,6 +9,7 @@ contract rentalAgreement is  ERCX {
     address payable public tenant;
     address payable public owner;
     uint256 public expiration;
+
     string lessee;
     string landlord;
     string mailingAddress;
@@ -17,11 +18,22 @@ contract rentalAgreement is  ERCX {
     string month;
     string year;
    
+   
+    bool renterInsurance = false;
+    bool criminalCheck = false;
+    bool creditCheck = false;
+    bool approved = false;
+    bool paidDeposit = false;
+
     constructor() public {
         owner = msg.sender;
     }
     modifier onlyOwner(){
         require(msg.sender == owner, "Only owner requirement");
+        _;
+    }
+    modifier approval(){
+        require(approved == true , "Tenant not approved");
         _;
     }
     function extend(uint256 newExpiration) external onlyOwner{
@@ -33,29 +45,21 @@ contract rentalAgreement is  ERCX {
     // create contract lengths 
     uint[] internal duration = [0, 15768000 ,31536000, 38880000]; // duration[1] is for 6 months
 
-    function leaseApt(address payable _tenant, uint _duration, uint itemID) public onlyOwner returns(string memory) {
+    function leaseApt(address payable _tenant, uint _duration, uint itemID) public onlyOwner approval returns(string memory) {
         expiration = SafeMath.add(duration[_duration], block.timestamp);
         tenant = _tenant;
 
-        if(approved == true){safeTransferUser(owner, tenant, itemID);}
-        else {return "Tenant not approved";}
+        safeTransferUser(owner, tenant, itemID);
 
-         require(approved == true , "Tenant not approved");
     }
      function terminateAgreement(address payable _tenant, uint itemID) external onlyOwner {
-        require(block.timestamp >= expiration, "Leasee has still time left in the contract");
+        require(block.timestamp >= expiration, "Lessee has still time left in the contract");
         tenant = _tenant;
         safeTransferUser(tenant,owner,itemID);
     }
     function mint(address person, uint ID) public onlyOwner {
         _mint(person, ID);
     }
-
-    bool renterInsurance = false;
-    bool criminalCheck = false;
-    bool creditCheck = false;
-    bool approved = false;
-    bool paidDeposit = false;
 
     function finalApproval(address payable _tenant, uint itemID, bool _renterInsurance, bool _criminalCheck, bool _creditCheck, bool _paidDeposit) public onlyOwner returns (bool)  {
         
@@ -68,12 +72,8 @@ contract rentalAgreement is  ERCX {
         approveForUser(tenant, itemID);
 
         if (renterInsurance == true && criminalCheck == true && creditCheck == true && paidDeposit == true ){return approved = true;}
-        else {return approved = false;}
+        else {approved = false;}
+        return approved;
 
     }
-
-    //  function getExpiration(uint itemID) view public returns(uint) {
-
-    //     return (expiration);
-    // }
 }

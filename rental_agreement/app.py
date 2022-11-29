@@ -51,10 +51,6 @@ zipCode = st.text_input("Zip Code")
 
 date = st.date_input("Lease Start Date")
 
-# month = st.text_input("Lease Start Month")
-
-# year = st.text_input("Lease Start Year")
-
 rent = st.text_input("Rent Amount")
 
 deposit = st.text_input("Deposit Amount")
@@ -129,13 +125,18 @@ criminalCheck = st.checkbox("Criminal Check")
 st.markdown("#### Submit for Approval")
 
 st.write(f"By selecting 'Approve', the Landlord agrees to submitting this application for approval and verifies that the Tenant agrees to the terms and conditions as stated above. If the Tenant's application is approved Apartment number: {apt_no} at {mailingAddress} will be available to the Tenant for lease.")
-if st.button("Approve"):
-    try:
-        tx_hash = contract.functions.finalApproval(user, int(apt_no), renterInsurance,criminalCheck,creditCheck, paidDeposit)
-        st.write(f"The Tenant's application has been submitted for approval.")
-    except Exception as e:
-         st.warning(f"RunTimeError: {e}")
-    
+
+if renterInsurance:
+    if paidDeposit:
+        if creditCheck:
+            if criminalCheck:
+                if st.button("Approve"):
+                    try:
+                        tx_hash = contract.functions.finalApproval(user, int(apt_no), renterInsurance,criminalCheck,creditCheck, paidDeposit)
+                        st.write(f"The Tenant's application has been submitted for approval.")
+                    except Exception as e:
+                        st.warning(f"RunTimeError: {e}")
+        
 st.markdown("#### Lease Apartment")
 st.write(f"By selecting 'Lease', the Landlord verifies that the Tenant has been approved to lease Apartment number: {apt_no} at {mailingAddress} beginning on {date}.")
 if st.button("Lease"):
@@ -172,20 +173,20 @@ if st.button("Landlord", key = "ownerof"):
 st.markdown("#### Extend Lease")
 
 st.write("Before the completion of the above lease agreement, the Parties listed may decide to extend the agreement. If the Parties wish to do so, select 'Extend' below after choosing the agreed upon legth of the extension (in months).")  
-newExpiration = st.number_input("Length of Extension")
+newExpiration = st.number_input("Length of Extension",step = 1, format = "%i")
 monthExpiration = int(newExpiration) * 2628288
 
 if st.button("Extend"):
     try:
         tx_hash = contract.functions.extend(monthExpiration).transact({"from":owner})
         receipt = w3.eth.waitForTransactionReceipt(tx_hash)
-        st.write("Receipt is ready. Here it is:")
+        st.write(f"The lease has been extended by {newExpiration} months")
         st.write(dict(receipt))
     except Exception as e:
         st.write(f"Error: {e}")
         
-ts = int(monthExpiration)
-ts = datetime.utcfromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+# ts = int(monthExpiration)
+# ts = datetime.utcfromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
 
 # if st.button("Expiration Date", key = "expirationDate"):
 #     expirationDate = contract.functions.getExpiration(int(apt_no)).call()
@@ -203,6 +204,7 @@ if st.button("Terminate"):
         st.write(dict(receipt))
     except Exception as e:
         st.warning(f"Error: {e}")
+
 
     
     
