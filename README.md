@@ -13,7 +13,7 @@ the owner as an additional insured
 * Having a good credit score
 * Paying the deposit
 
-Once all the requirements are fulfilled, then the NFT is passed over to the tenant. But if the applicant fails to complete at least one of the listed requirements, a message “Tenant not approved” will pop up. The duration of the lease contract can be chosen to be either short-term representing 6 months, mid term - 12 months, or long term - 15 months. The landlord cannot terminate the agreement if the lease is
+Once all the requirements are fulfilled, then the NFT is passed over to the tenant. But if the applicant fails to complete at least one of the listed requirements, a message “Tenant not approved” will pop up. The duration of the lease contract can be chosen to be either short-term representing 6 months, mid term - 12 months, or long term - 15 months. The landlord cannot terminate the agreement if the lease before the lease expiration.
 
 
 ## Package requirements and imports
