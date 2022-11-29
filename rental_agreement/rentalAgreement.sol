@@ -5,7 +5,12 @@ pragma solidity ^0.5.0;
 
 import "https://github.com/kohshiba/ERC-X/blob/master/contracts/ERCX/Contract/ERCX.sol";
 
+// Create Contract
+
 contract rentalAgreement is  ERCX {
+
+// Create state variables 
+
     address payable public tenant;
     address payable public owner;
     uint256 public expiration;
@@ -25,9 +30,14 @@ contract rentalAgreement is  ERCX {
     bool approved = false;
     bool paidDeposit = false;
 
+// Create constructor that declares the owner
+
     constructor() public {
         owner = msg.sender;
     }
+
+// Create modifiers for restrictions 
+
     modifier onlyOwner(){
         require(msg.sender == owner, "Only owner requirement");
         _;
@@ -35,6 +45,9 @@ contract rentalAgreement is  ERCX {
     modifier approval(){
         require(approved == true , "Tenant not approved");
         _;
+
+// Create the functions that we need
+
     }
     function extend(uint256 newExpiration) external onlyOwner{
         require(block.timestamp <= expiration, "This agreement has expired and cannot be extended. Please sign a new contract.");
@@ -42,8 +55,12 @@ contract rentalAgreement is  ERCX {
         expiration = _newExpiration;
     }
 
-    // create contract lengths 
-    uint[] internal duration = [0, 15768000 ,31536000, 38880000]; // duration[1] is for 6 months
+ // create contract lengths
+    // duration[1] is for 6 months
+    // duration[2] is for 12 months
+    // duration[3] is for 15 months
+
+    uint[] internal duration = [0, 15768000 ,31536000, 38880000];  
 
     function leaseApt(address payable _tenant, uint _duration, uint itemID) public onlyOwner approval returns(string memory) {
         expiration = SafeMath.add(duration[_duration], block.timestamp);

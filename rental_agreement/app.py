@@ -6,8 +6,6 @@ from dotenv import load_dotenv
 import streamlit as st
 from datetime import datetime
 
-# from pinata import pinFiletoIPFS, pinJSONtoIPFS, convertDatatoJSON
-
 load_dotenv()
 
 w3 = Web3(Web3.HTTPProvider(os.getenv("WEB_PROVIDER_URI")))
@@ -30,6 +28,7 @@ def load_contract():
 
 contract = load_contract()
 
+# front end 
 
 accounts = w3.eth.accounts
 
@@ -101,6 +100,8 @@ if st.button("Mint and Register"):
     except Exception as e:
          st.warning(f"RunTimeError: {e}")
 
+# Create the Lease Agreement 
+
 st.markdown("### Lease Agreement")
 st.markdown(leaseAgreement)
 
@@ -121,6 +122,7 @@ creditCheck = st.checkbox("Credit Check")
 criminalCheck = st.checkbox("Criminal Check")
 
         
+# Approve & Lease an apartment
 
 st.markdown("#### Submit for Approval")
 
@@ -148,6 +150,7 @@ if st.button("Lease"):
     except Exception as e:
          st.warning(f"RunTimeError: {e}")
         
+# Verify the Landlord and Tenant
     
 st.markdown("#### Verify Lease")
     
@@ -168,7 +171,7 @@ if st.button("Landlord", key = "ownerof"):
     ownerOf = contract.functions.ownerOf(int(apt_no)).call()
     st.write(f"apartment number {apt_no} is used by {ownerOf} at the moment")
     
-    
+# Extend the Lease    
  
 st.markdown("#### Extend Lease")
 
@@ -191,7 +194,6 @@ if st.button("Extend"):
 # if st.button("Expiration Date", key = "expirationDate"):
 #     expirationDate = contract.functions.getExpiration(int(apt_no)).call()
 #     st.write(f"Expiration Date is {expirationDate}")
-        
 
 st.markdown("#### Terminate Lease")
 st.write(f"Upon completion of the above lease agreement, the contract shall be terminated, and the token representing apartment number: {apt_no} at {mailingAddress} shall be returned to the Landlord. If the agreement has been completed, select 'Terminate' below.")
@@ -200,7 +202,7 @@ if st.button("Terminate"):
     try:
         tx_hash = contract.functions.terminateAgreement(user, int(apt_no)).transact({"from":owner})
         receipt = w3.eth.waitForTransactionReceipt(tx_hash)
-        st.write("Receipt is ready. Here it is:")
+        st.write("The agreement has been terminated")
         st.write(dict(receipt))
     except Exception as e:
         st.warning(f"Error: {e}")

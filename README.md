@@ -1,10 +1,13 @@
 # Rental-Agreement-Smart-Contract
 
 ## Project overview
+![Sample Image of Front End Inputs](Images/snip1.png)
 
 It is a smart contract for property managers which allows both landlords and tenants to take advantage of the capabilities of blockchain technology. Landlords create a smart contract with the key requirements of the tenancy such as rent amount, payment frequency, property and insurance details. Once all the terms and conditions are reviewed, the contract is electronically signed by both parties and published on the Blockchain. Once published, it is activated and executes transactions using a payments bridge to control the flow of funds between accounts, as specified in the terms of the contract.
 
 We minted a token (like an NFT token), that represents the apartment that is being leased. The token has all unique features such as interoperability, scarcity and transparency. Only the owner is allowed to mint this token. We imported this contract because it had basic rental agreement functions.We just had to add our own requirements and functionalities on top of it to make it more efficient. 
+
+![Sample Image of Transactions Hash](Images/snip2.png)
 
 There are a few requirements for a potential tenant to complete in order to be approved by the landlord:
  * Having purchased renters insurance and indicating 
@@ -15,6 +18,7 @@ the owner as an additional insured
 
 Once all the requirements are fulfilled, then the NFT is passed over to the tenant. But if the applicant fails to complete at least one of the listed requirements, a message “Tenant not approved” will pop up. The duration of the lease contract can be chosen to be either short-term representing 6 months, mid term - 12 months, or long term - 15 months. The landlord cannot terminate the agreement if the lease before the lease expiration.
 
+![Sample Image of Lessee Verification](Images/snip3.png)
 
 ## Package requirements and imports
 We imported the following contract because it had basic rental agreement functions: <br>
