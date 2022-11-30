@@ -109,8 +109,17 @@ st.write("Landlord and Tenant are each referred to herin as a 'Party' and, colle
 st.write("NOW, THEREFORE, FOR AND IN CONSIDERATION of the mutual promises and agreemnts contained herein, the Tenant agrees to lease the Premises from the Landlord under the following terms and conditions:")
 st.markdown("#### 1. Rent")
 
+# st.markdown(rent)
+# form = st.form("Insurance", clear_on_submit = True)
+# with form:
+#     renterInsurance = st.checkbox("Renter's Insurace")
+# submitInsurance = form.form_submit_button("Insurance")
+# st.write(f"{renterInsurance}")
+
 st.markdown(rent)
 renterInsurance = st.checkbox("Renter's Insurace")
+st.write(f"{renterInsurance}")
+
 
 st.markdown("#### 2. Security Deposit")
 st.markdown(securityDeposit)      
@@ -128,28 +137,40 @@ st.markdown("#### Submit for Approval")
 
 st.write(f"By selecting 'Approve', the Landlord agrees to submitting this application for approval and verifies that the Tenant agrees to the terms and conditions as stated above. If the Tenant's application is approved Apartment number: {apt_no} at {mailingAddress} will be available to the Tenant for lease.")
 
-if renterInsurance:
-    if paidDeposit:
-        if creditCheck:
-            if criminalCheck:
-                if st.button("Approve"):
-                    try:
-                        tx_hash = contract.functions.finalApproval(user, int(apt_no), renterInsurance,criminalCheck,creditCheck, paidDeposit)
-                        st.write(f"The Tenant's application has been submitted for approval.")
-                    except Exception as e:
-                        st.warning(f"RunTimeError: {e}")
+# if renterInsurance:
+#     if paidDeposit:
+#         if creditCheck:
+#             if criminalCheck:
+# approved = False
+if renterInsurance and paidDeposit and creditCheck and criminalCheck:
+    if st.button("Approve"):
+        try:
+            tx_hash = contract.functions.finalApproval(user, int(apt_no), renterInsurance,criminalCheck,creditCheck, paidDeposit)
+            st.write(f"The Tenant's application has been submitted for approval.")
+            # global approved
+            approved = True
+        except Exception as e:
+            st.warning(f"RunTimeError: {e}")
+else:
+    st.warning("### Please complete the above fields before approving the apt.")
         
 st.markdown("#### Lease Apartment")
 st.write(f"By selecting 'Lease', the Landlord verifies that the Tenant has been approved to lease Apartment number: {apt_no} at {mailingAddress} beginning on {date}.")
-if st.button("Lease"):
-    try:
-        tx_hash = contract.functions.leaseApt(user, int(_duration), int(apt_no)).transact({"from":owner})
-        receipt = w3.eth.waitForTransactionReceipt(tx_hash)
-        st.write("Receipt is ready. Here it is:")
-        st.write(dict(receipt))
-    except Exception as e:
-         st.warning(f"RunTimeError: {e}")
-        
+try:
+    if renterInsurance and paidDeposit and creditCheck and criminalCheck:
+        if st.button("Lease"):
+            try:
+                tx_hash = contract.functions.leaseApt(user, int(_duration), int(apt_no)).transact({"from":owner})
+                receipt = w3.eth.waitForTransactionReceipt(tx_hash)
+                st.write("The apartment has been leased.")
+                st.write(dict(receipt))
+                # renterInsurance = paidDeposit = creditCheck = criminalCheck =  False
+            except Exception as e:
+                st.warning(f"RunTimeError: {e}")
+    else:
+        st.warning("### Please complete the above fields before leasing the apt.")
+except Exception as e:
+    st.warning(f"RunTimeError: {e}")   
 # Verify the Landlord and Tenant
     
 st.markdown("#### Verify Lease")
